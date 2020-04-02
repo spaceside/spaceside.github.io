@@ -1,8 +1,77 @@
 <!DOCTYPE html>
-<html>
-<title>090</title>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <script src="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Cesium.js"></script>
+  <link href="https://cesium.com/downloads/cesiumjs/releases/1.68/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
+</head>
 <body>
-<h1>Hello World</h1>
-<p>I'm hosted with GitHub Pages.</p>
+  <div id="cesiumContainer" style="width: 700px; height:400px"></div>
+  <script>
+
+// Grant CesiumJS access to your ion assets
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmODI2YzAwOS0xOTg4LTQ3ZDYtOTRmZS1jNTU0MzVjZGQyYTgiLCJpZCI6MTM5OTEsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjQ1MzMyNzl9.6_a3Wu9fGbwz5AoTlAp4lPmy_v6-bkr4PaI_Y2gqcC4';
+
+var viewer = new Cesium.Viewer('cesiumContainer');
+
+function drillPickEntities(viewer, windowPosition) {
+  var i;
+  var entity;
+  var picked;
+  var pickedPrimitives = viewer.scene.drillPick(windowPosition);
+  var length = pickedPrimitives.length;
+  var result = [];
+  var hash = {};
+
+  for (i = 0; i < length; i++) {
+    picked = pickedPrimitives[i];
+    entity = Cesium.defaultValue(picked.id, picked.primitive.id);
+    if (entity instanceof Cesium.Entity &&
+        !Cesium.defined(hash[entity.id])) {
+      result.push(entity);
+      hash[entity.id] = true;
+    }
+  }
+  return result;
+};
+
+
+var imageryLayers = viewer.imageryLayers;
+imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
+    url : 'https://maps.gdc.govt.nz/arcgis/rest/services/Open_Data/GDC_utilties_stormwater/MapServer',
+    layers: '0',
+}));
+
+
+imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
+    url : 'https://maps.gdc.govt.nz/arcgis/rest/services/Open_Data/GDC_utilties_wastewater/MapServer',
+    layers: '0',
+}));
+
+imageryLayers.addImageryProvider(new Cesium.ArcGisMapServerImageryProvider({
+    url : 'https://maps.gdc.govt.nz/arcgis/rest/services/Open_Data/GDC_utilties_water/MapServer',
+    layers: '0',
+}));
+
+
+    viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://spaceside.github.io/090/GeoJSON/CityCycleandWalkways.GeoJSON'));
+
+
+
+    viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://spaceside.github.io/090/GeoJSON/ProposedWalkways.GeoJSON'));
+
+
+var Bridges = Cesium.GeoJsonDataSource.load('https://spaceside.github.io/090/GeoJSON/IntersectingBridgesBuffer50m.GeoJSON',{
+        stroke: Cesium.Color.HOTPINK,
+        fill: Cesium.Color.HOTPINK.withAlpha(0.5),
+        strokeWidth: 10
+    });
+
+      viewer.dataSources.add(Bridges);
+      viewer.zoomTo(Bridges);
+        
+ </script>
 </body>
 </html>
+
+  
