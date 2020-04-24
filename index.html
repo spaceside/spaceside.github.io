@@ -12,7 +12,7 @@
 // Grant CesiumJS access to your ion assets
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmODI2YzAwOS0xOTg4LTQ3ZDYtOTRmZS1jNTU0MzVjZGQyYTgiLCJpZCI6MTM5OTEsInNjb3BlcyI6WyJhc3IiLCJnYyJdLCJpYXQiOjE1NjQ1MzMyNzl9.6_a3Wu9fGbwz5AoTlAp4lPmy_v6-bkr4PaI_Y2gqcC4';
 
-cesiumWidget = new Cesium.Viewer('cesiumContainer', {
+var viewer = new Cesium.Viewer('cesiumContainer');
 
 
 function drillPickEntities(viewer, windowPosition) {
