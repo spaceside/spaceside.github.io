@@ -27,12 +27,6 @@
 
     // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
 
-    const viewer = new Cesium.Viewer('cesiumContainer', {
-
-      terrainProvider: Cesium.createWorldTerrain()
-
-    });    
-
 var west = 177.95;
 var south = -38.6;
 var east = 178.05;
@@ -43,9 +37,13 @@ var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
 Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
 
-var viewer = new Cesium.Viewer('cesiumContainer', {
+const viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayerPicker : false
 });
+
+    });    
+
+
 
 
 
