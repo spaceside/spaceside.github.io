@@ -4,13 +4,10 @@
 
 <head>
 
-  <meta charset="utf-8">
 
-  <!-- Include the CesiumJS JavaScript and CSS files -->
+ <script src="https://cesiumjs.org/releases/1.88/Build/Cesium/Cesium.js"></script>
+<link href="https://cesiumjs.org/releases/1.88/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 
-  <script src="https://cesium.com/downloads/cesiumjs/releases/1.88/Build/Cesium/Cesium.js"></script>
-
-  <link href="https://cesium.com/downloads/cesiumjs/releases/1.88/Build/Cesium/Widgets/widgets.css" rel="stylesheet">
 
 </head>
 
@@ -19,14 +16,7 @@
   <div id="cesiumContainer"></div>
 
   <script>
-    // Your access token can be found at: https://cesium.com/ion/tokens.
-    // This is the default access token from your ion account
-
-
-    Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo';
-
-    // Initialize the Cesium Viewer in the HTML element with the `cesiumContainer` ID.
-
+   
 var west = 177.95;
 var south = -38.6;
 var east = 178.05;
@@ -37,12 +27,9 @@ var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
 Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
 
-const viewer = new Cesium.Viewer('cesiumContainer', {
+var viewer = new Cesium.Viewer('cesiumContainer', {
     baseLayerPicker : false
 });
-
-    });    
-
 
 
 
