@@ -33,7 +33,7 @@
 
     });    
 
-  var west = 177.95;
+var west = 177.95;
 var south = -38.6;
 var east = 178.05;
 var north = -38.7;
@@ -43,21 +43,10 @@ var rectangle = Cesium.Rectangle.fromDegrees(west, south, east, north);
 Cesium.Camera.DEFAULT_VIEW_FACTOR = 0;
 Cesium.Camera.DEFAULT_VIEW_RECTANGLE = rectangle;
 
-var viewer = new Cesium.Viewer('cesiumContainer');
+var viewer = new Cesium.Viewer('cesiumContainer', {
+    baseLayerPicker : false
+});
 
-viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_0.geojson',{
-    markerSize : 24,
-    stroke: Cesium.Color.CHARTREUSE,
-    }));
-viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_1.geojson',{
-    stroke: Cesium.Color.CHARTREUSE
-    }));
-viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_3.geojson',{
-    stroke: Cesium.Color.CHARTREUSE
-    }));
-viewer.dataSources.add(Cesium.GeoJsonDataSource.load('https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_2.geojson',{
-    stroke: Cesium.Color.CHARTREUSE
-    }));
 
 
   </script>
