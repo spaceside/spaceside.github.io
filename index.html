@@ -18,7 +18,7 @@
 
   <script>
     
-
+Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo'
     
 // Grant CesiumJS access to your ion assets
 Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo";
@@ -39,13 +39,13 @@ var tileset = viewer.scene.primitives.add(
 );
 
 tileset.style = new Cesium.Cesium3DTileStyle({
-    pointSize : 10.0
+    pointSize : 4
 });
 
-tileset.maximumScreenSpaceError = 16.0;
-  tileset.pointCloudShading.maximumAttenuation = 4.0; // Don't allow points larger than 4 pixels.
-  tileset.pointCloudShading.baseResolution = 0.05; // Assume an original capture resolution of 5 centimeters between neighboring points.
-  tileset.pointCloudShading.geometricErrorScale = 0.5; // Applies to both geometric error and the base resolution.
+tileset.maximumScreenSpaceError = 1.0;
+  tileset.pointCloudShading.maximumAttenuation = 80.0; // Don't allow points larger than 40 pixels.
+  tileset.pointCloudShading.baseResolution = 10; // Assume an original capture resolution of 1 centimeters between neighboring points.
+  tileset.pointCloudShading.geometricErrorScale = 1.0; // Applies to both geometric error and the base resolution.
   tileset.pointCloudShading.attenuation = true;
   tileset.pointCloudShading.eyeDomeLighting = true;
 
