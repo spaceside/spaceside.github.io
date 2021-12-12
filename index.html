@@ -20,78 +20,61 @@
     
 Cesium.Ion.defaultAccessToken = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo'
     
-var terrain = Cesium.createDefaultTerrainProviderViewModels();
+// Grant CesiumJS access to your ion assets
+Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo";
+
 
 var viewer = new Cesium.Viewer('cesiumContainer', {
   timeline : false,
   animation : false,
   cesiumWidget: false,
   navigationHelpButton : false,
-  terrainProviderViewModels: terrain,
-    selectedTerrainProviderViewModel: terrain[1]
-  
+});
+viewer.scene.terrainProvider = false;
+
+var tileset = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: Cesium.IonResource.fromAssetId(704993),
+  })
+);
+
+tileset.style = new Cesium.Cesium3DTileStyle({
+    pointSize : 10.0
 });
 
-// This array will hold our cartographic height queries, one per building, and will
-// also be populated with the answers.
-var terrainSamplePositions = [];
+tileset.maximumScreenSpaceError = 16.0;
+  tileset.pointCloudShading.maximumAttenuation = 4.0; // Don't allow points larger than 4 pixels.
+  tileset.pointCloudShading.baseResolution = 0.05; // Assume an original capture resolution of 5 centimeters between neighboring points.
+  tileset.pointCloudShading.geometricErrorScale = 0.5; // Applies to both geometric error and the base resolution.
+  tileset.pointCloudShading.attenuation = true;
+  tileset.pointCloudShading.eyeDomeLighting = true;
+
 
 var dataSource2 = new Cesium.GeoJsonDataSource();
-var promise = dataSource2.load("https://opendata.arcgis.com/datasets/0b764bfa0bb74be38b1140035aaa7711_0.geojson");
+var promise = dataSource2.load("https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_3.geojson",{
+  stroke: Cesium.Color.CHARTREUSE,
+});
 promise.then(function(dataSource2) {
     viewer.dataSources.add(dataSource2);
-    viewer.zoomTo(dataSource2);
-
-
-    //Get the array of entities
-    var entities2 = dataSource2.entities.values;
-
-    var colorHash = {};
-    for (var i = 0; i < entities2.length; i++) {
-        //For each entity, create a random color based on the state name.
-        //Some states have multiple entities, so we store the color in a
-        //hash so that we use the same color for the entire state.
-        var entity = entities2[i];
-        var name = entity.Elevation;
-        var color = colorHash[name];
-        if (!color) {
-            color = Cesium.Color.BROWN; 
-            colorHash[name] = color;
-        }
-
-        //Set the polygon material to our random color.
-        entity.polygon.material = color;
-        //Remove the outlines.
-        entity.polygon.outline = false;
-
-        // TODO: More sanity checking for undefined values etc.
-        var position = entity.polygon.hierarchy.getValue().positions[0];
-        terrainSamplePositions.push(Cesium.Cartographic.fromCartesian(position));
-
-        //Extrude the polygon based on the state's population.  Each entity
-        //stores the properties for the GeoJSON feature it was created from
-        //Since the population is a huge number, we divide by 50.
-        entity.polygon.extrudedHeight = entity.properties.Elevation;
-        entity.polygon.height = 0;
-    }
-
-    // Asking for terrain heights is asynchronous, because the answer may
-    // reside on the terrain server.
-    Cesium.when(Cesium.sampleTerrain(viewer.terrainProvider, 15, terrainSamplePositions), function() {
-        // Update all building heights to sit on top of the terrain.
-        for (var i = 0; i < entities2.length; i++) {
-            var entity = entities2[i];
-            var terrainHeight = terrainSamplePositions[i].height;
-            // The bottom of the building sits on the terrain.
-            entity.polygon.height = terrainHeight - 1;
-            // The top of the building adds the building height to the terrain height.
-            entity.polygon.extrudedHeight = terrainHeight + 3;
-        }
-    });
-  }).otherwise(function(error){
-    //Display any errrors encountered while loading.
-    console.error(error);
 });
+
+
+
+
+
+
+
+
+tileset.readyPromise
+  .then(function () {
+    viewer.zoomTo(tileset);
+  })
+
+
+  .otherwise(function (error) {
+    console.log(error);
+  });
+
 
     
 
