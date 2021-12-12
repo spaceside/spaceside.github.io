@@ -38,7 +38,7 @@ var viewer = new Cesium.Viewer('cesiumContainer', {
 var terrainSamplePositions = [];
 
 var dataSource2 = new Cesium.GeoJsonDataSource();
-var promise = dataSource2.load("https://services7.arcgis.com/8G10QCd84QpdcTJ9/arcgis/rest/services/building_footprints/FeatureServer/0/query?outFields=*&where=1%3D1&f=geojson");
+var promise = dataSource2.load("https://opendata.arcgis.com/datasets/0b764bfa0bb74be38b1140035aaa7711_0.geojson");
 promise.then(function(dataSource2) {
     viewer.dataSources.add(dataSource2);
     viewer.zoomTo(dataSource2);
