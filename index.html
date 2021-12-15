@@ -49,7 +49,7 @@ tileset.maximumScreenSpaceError = 1.0;
   tileset.pointCloudShading.attenuation = true;
   tileset.pointCloudShading.eyeDomeLighting = true;
 
-
+Cesium.GeoJsonDataSource.clampToGround = true;
 var dataSource2 = new Cesium.GeoJsonDataSource();
 var promise = dataSource2.load("https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_3.geojson",{
   stroke: Cesium.Color.CHARTREUSE,
