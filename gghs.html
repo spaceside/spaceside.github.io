@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, maximum-scale=1, minimum-scale=1, user-scalable=no"
+    />
+    <meta name="description" content="Load GeoJSON with simplestyle information.">
+    <meta name="cesium-sandcastle-labels" content="Showcases, DataSources">
+    <title>Cesium Demo</title>
+    <script type="text/javascript" src="https://cesiumjs.org/releases/1.88/Build/Cesium/Sandcastle-header.js"></script>
+    <script
+      type="text/javascript"
+      src="https://cesiumjs.org/releases/1.88/Build/Cesium/Cesium.js"
+      
+    ></script>
+
+  </head>
+  <body
+    class="sandcastle-loading"
+    data-sandcastle-bucket="bucket-requirejs.html"
+  >
+<style>
+      @import url("https://cesiumjs.org/releases/1.88/Build/Cesium/Widgets/widgets.css");
+      #toolbar {
+        background: rgba(42, 42, 42, 0.8);
+        padding: 4px;
+        border-radius: 4px;
+      }
+      #toolbar input {
+        vertical-align: middle;
+        padding-top: 2px;
+        padding-bottom: 2px;
+      }
+      #toolbar .header {
+        font-weight: bold;
+      }
+    </style>
+    <div id="cesiumContainer" class="fullSize"></div>
+    <div id="loadingOverlay"><h1>Loading...</h1></div>
+    <div id="toolbar">
+      <table>
+        <tbody>
+          <tr>
+            <td>Translucency enabled</td>
+            <td>
+              <input type="checkbox" data-bind="checked: translucencyEnabled">
+            </td>
+          </tr>
+          <tr>
+            <td>Fade by distance</td>
+            <td>
+              <input type="checkbox" data-bind="checked: fadeByDistance">
+            </td>
+          </tr>
+          <tr>
+            <td>Show vector data</td>
+            <td>
+              <input type="checkbox" data-bind="checked: showVectorData">
+            </td>
+          </tr>
+          <tr>
+            <td>Alpha</td>
+            <td>
+              <input type="range" min="0.0" max="1.0" step="0.1" data-bind="value: alpha, valueUpdate: 'input'">
+              <input type="text" size="5" data-bind="value: alpha">
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <script id="cesium_sandcastle_script">
+function startup(Cesium) {
+    'use strict';
+//Sandcastle_Begin
+// Grant CesiumJS access to your ion assets
+Cesium.Ion.defaultAccessToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJqdGkiOiJmMmU4YWJkNS1jMDI1LTQxNGItYWZlMi1hMzE1YmNkMDVmNWQiLCJpZCI6NDY1OTMsImlhdCI6MTYxNjM4MDIxNX0.YthbqlUf7PRAm8nG6pjUvZ7Oassz76CwYzbPRbczuVo";
+
+
+const viewer = new Cesium.Viewer("cesiumContainer", {
+    
+});
+  
+const scene = viewer.scene;
+const globe = scene.globe;
+
+scene.screenSpaceCameraController.enableCollisionDetection = false;
+globe.translucency.frontFaceAlphaByDistance = new Cesium.NearFarScalar(
+  100.0,
+  0.0,
+  400.0,
+  1.0
+);
+//Example 1: Load with default styling.
+Sandcastle.addDefaultToolbarButton("Util Only", function () {
+var tilesetutil = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: Cesium.IonResource.fromAssetId(814220),
+  })
+);
+
+   viewer.zoomTo(tilesetutil);
+});
+
+//Example 2: Load with basic styling options.
+Sandcastle.addToolbarButton("Xing", function () {
+ var xing = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: Cesium.IonResource.fromAssetId(811500),
+  })
+);
+
+var tileset = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: Cesium.IonResource.fromAssetId(811501),
+  })
+);
+
+var tilesetutil = viewer.scene.primitives.add(
+  new Cesium.Cesium3DTileset({
+    url: Cesium.IonResource.fromAssetId(814220),
+  })
+);
+  viewer.zoomTo(tilesetutil);
+  });
+
+
+
+const viewModel = {
+  translucencyEnabled: true,
+  fadeByDistance: true,
+  showVectorData: false,
+  alpha: 0.5,
+};
+
+Cesium.knockout.track(viewModel);
+const toolbar = document.getElementById("toolbar");
+Cesium.knockout.applyBindings(viewModel, toolbar);
+for (const name in viewModel) {
+  if (viewModel.hasOwnProperty(name)) {
+    Cesium.knockout.getObservable(viewModel, name).subscribe(update);
+  }
+}
+
+function update() {
+  globe.translucency.enabled = viewModel.translucencyEnabled;
+
+  let alpha = Number(viewModel.alpha);
+  alpha = !isNaN(alpha) ? alpha : 1.0;
+  alpha = Cesium.Math.clamp(alpha, 0.0, 1.0);
+
+  globe.translucency.frontFaceAlphaByDistance.nearValue = alpha;
+  globe.translucency.frontFaceAlphaByDistance.farValue = viewModel.fadeByDistance
+    ? 1.0
+    : alpha;
+
+
+}
+update();
+Sandcastle.reset = function () {
+     viewer.scene.primitives.removeAll();   
+  };
+
+
+// This array will hold our cartographic height queries, and will
+// also be populated with the answers.
+var terrainSamplePositions = [];
+
+var dataSource1 = new Cesium.GeoJsonDataSource();
+var roads = dataSource1.load("https://opendata.arcgis.com/datasets/4149ec7a77c8410b9be4ad864b784ce3_3.geojson");
+roads.then(function(dataSource1) {
+    viewer.dataSources.add(dataSource1);
+
+    //Get the array of entities
+    var entities1 = dataSource1.entities.values;
+
+    var colorHash = {};
+    for (var i = 0; i < entities1.length; i++) {
+        var entity = entities1[i];
+        var name = entity.name;
+        var color = colorHash[name];
+        if (!color) {
+            color = Cesium.Color.CHARTREUSE; 
+            colorHash[name] = color;
+        }
+        entity.polyline.material = color;
+        //Remove the outlines.
+        entity.polyline.outline = false;
+
+        var positions = entity.polyline.positions.getValue();
+        for (var p = 0; p < positions.length; ++p) {
+            terrainSamplePositions.push(Cesium.Cartographic.fromCartesian(positions[p]));
+        }
+    }
+
+    // Asking for terrain heights is asynchronous, because the answer may
+    // reside on the terrain server.
+    Cesium.when(Cesium.sampleTerrainMostDetailed(viewer.terrainProvider, terrainSamplePositions), function() {
+        // Fudge the height values to keep off the ground.
+        for (var k = 0; k < terrainSamplePositions.length; ++k) {
+            terrainSamplePositions[k].height -= 8.0;  //  elevation offset
+        }
+        // Update all lines to sit on top of the terrain.
+        var cartesians = viewer.scene.globe.ellipsoid.cartographicArrayToCartesianArray(
+            terrainSamplePositions);
+        var index = 0;
+        for (var j = 0; j < entities1.length; j++) {
+            var entity = entities1[j];
+            var numPositions = entity.polyline.positions.getValue().length;
+            var positions = [];
+            for (var p = 0; p < numPositions; ++p) {
+                positions.push(cartesians[index]);
+                ++index;
+            }
+            entity.polyline.positions.setValue(positions);
+        }
+    });    
+
+}).otherwise(function(error){
+    //Display any errrors encountered while loading.
+    window.alert(error);
+});
+
+
+//Sandcastle_End
+    Sandcastle.finishedLoading();
+}
+if (typeof Cesium !== 'undefined') {
+    window.startupCalled = true;
+    startup(Cesium);
+}
+</script>
+</body>
+</html>
